@@ -64,8 +64,8 @@ try{
     $gpsy = $_SESSION['gpsy'];
 
    // $gpslen = $_GET['elen']; 
-    $e3 = $db->prepare("SELECT 名称, 住所, X(位置), Y(位置), ROUND(GLENGTH(GEOMFROMTEXT(CONCAT('LineString(', ?, ' ', ?, ', ', X(位置), ' ', Y(位置), ')'))) * 112.12 * 1000 ) AS '直線距離' FROM earea 
-    WHERE 地震災害 LIKE ? AND 暴風災害 LIKE ? AND 水害 LIKE ? AND その他 LIKE ? AND 指定なし LIKE ? AND ROUND(GLENGTH(GEOMFROMTEXT(CONCAT('LineString(', ?, ' ', ?, ', ', X(位置), ' ', Y(位置), ')'))) * 112.12 * 1000  ) <= ?*1000 ORDER BY 直線距離 LIMIT 13;");
+    $e3 = $db->prepare("SELECT 名称, 住所, X(位置), Y(位置), 海抜, 収容人数, ROUND(GLENGTH(GEOMFROMTEXT(CONCAT('LineString(', ?, ' ', ?, ', ', X(位置), ' ', Y(位置), ')'))) * 112.12 * 1000 ) AS '直線距離' FROM earea 
+    WHERE 地震災害 LIKE ? AND 暴風災害 LIKE ? AND 水害 LIKE ? AND その他 LIKE ? AND 津波災害 LIKE ? AND ROUND(GLENGTH(GEOMFROMTEXT(CONCAT('LineString(', ?, ' ', ?, ', ', X(位置), ' ', Y(位置), ')'))) * 112.12 * 1000  ) <= ?*1000 ORDER BY 直線距離 LIMIT 13;");
 
     $e3->bindValue(1, $gpsx);
     $e3->bindValue(2, $gpsy);
@@ -83,14 +83,21 @@ try{
     $row = 0;
     while($result = $e3->fetch(PDO::FETCH_ASSOC)) {
         $ename[$row] = $result['名称'];
+        $point[$row] = $result['住所'];
         $pointX[$row] = $result['X(位置)'];
         $pointY[$row] = $result['Y(位置)'];
+        $hig[$row] = $result['海抜'];
+        $human[$row] = $result['収容人数'];
         $row++;
     }
     
     $_SESSION['ename'] = $ename;
+    $_SESSION['point'] = $point;
     $_SESSION['pointX'] = $pointX;
     $_SESSION['pointY'] = $pointY;
+    $_SESSION['hig'] = $hig; 
+    $_SESSION['human'] = $human; 
+    
     $_SESSION['gpsx'] = $gpsx; 
     $_SESSION['gpsy'] = $gpsy; 
 
@@ -275,17 +282,17 @@ try{
 <!-- 避難所情報1 -->
           <div class="col-xs-9 col-md-9 col-lg-9 center-block bg-info" style="text-align:center; font-size:30px;"><?php echo $ename[0]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[0]; ?>&point=<?php echo $point[0]; ?>&pointX=<?php echo $pointX[0]; ?>&pointY=<?php echo $pointY[0]; ?>&hig=<?php echo $hig[0]; ?>&human=<?php echo $human[0]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 <!-- 避難所情報2 -->
           <div class="col-xs-9 col-md-9 col-lg-9 bg-success" style="text-align:center; font-size:30px;"><?php echo $ename[1]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[1]; ?>&point=<?php echo $point[1]; ?>&pointX=<?php echo $pointX[1]; ?>&pointY=<?php echo $pointY[1]; ?>&hig=<?php echo $hig[1]; ?>&human=<?php echo $human[1]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 <!-- 避難所情報3 -->
           <div class="col-xs-9 col-md-9 col-lg-9 bg-danger" style="text-align:center; font-size:30px;"><?php echo $ename[2]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[2]; ?>&point=<?php echo $point[2]; ?>&pointX=<?php echo $pointX[2]; ?>&pointY=<?php echo $pointY[2]; ?>&hig=<?php echo $hig[2]; ?>&human=<?php echo $human[2]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
         </div>
       </div>

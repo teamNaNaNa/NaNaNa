@@ -1,8 +1,12 @@
 <?php
     session_start();
     $ename = $_SESSION['ename'];
+    $point = $_SESSION['point'];
     $pointX = $_SESSION['pointX'];
     $pointY = $_SESSION['pointY'];
+    $hig = $_SESSION['hig'];
+    $human = $_SESSION['human'];
+
     $gpsx = $_SESSION['gpsx'];
     $gpsy = $_SESSION['gpsy'];
 ?>
@@ -195,68 +199,56 @@
       <div class="container">       
         <div class="row">
 
-        <script>
-            var g1Name = <?php echo json_encode($ename[3]); ?>;
-            var g2Name = <?php echo json_encode($ename[4]); ?>;
-            var g3Name = <?php echo json_encode($ename[5]); ?>;
-            var g4Name = <?php echo json_encode($ename[6]); ?>;
-            var g5Name = <?php echo json_encode($ename[7]); ?>;
-            var g6Name = <?php echo json_encode($ename[8]); ?>;
-            var g7Name = <?php echo json_encode($ename[9]); ?>;
-            var g8Name = <?php echo json_encode($ename[10]); ?>;        
-            var g9Name = <?php echo json_encode($ename[11]); ?>;          
-            var g10Name = <?php echo json_encode($ename[12]); ?>;
-        </script>
-
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g1Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[3]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[3]; ?>&point=<?php echo $point[3]; ?>&hig=<?php echo $hig[3]; ?>&human=<?php echo $human[3]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g2Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[4]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[4]; ?>&point=<?php echo $point[4]; ?>&hig=<?php echo $hig[4]; ?>&human=<?php echo $human[4]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g3Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[5]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[5]; ?>&point=<?php echo $point[5]; ?>&hig=<?php echo $hig[5]; ?>&human=<?php echo $human[5]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g4Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[6]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[6]; ?>&point=<?php echo $point[6]; ?>&hig=<?php echo $hig[3]; ?>&human=<?php echo $human[6]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g5Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[7]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[7]; ?>&point=<?php echo $point[7]; ?>&hig=<?php echo $hig[7]; ?>&human=<?php echo $human[7]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g6Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[8]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[8]; ?>&point=<?php echo $point[8]; ?>&hig=<?php echo $hig[8]; ?>&human=<?php echo $human[8]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g7Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[9]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[9]; ?>&point=<?php echo $point[9]; ?>&hig=<?php echo $hig[9]; ?>&human=<?php echo $human[9]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g8Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[10]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[10]; ?>&point=<?php echo $point[10]; ?>&hig=<?php echo $hig[10]; ?>&human=<?php echo $human[10]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g9Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[11]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[11]; ?>&point=<?php echo $point[11]; ?>&hig=<?php echo $hig[11]; ?>&human=<?php echo $human[11]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
 
-          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><script>document.write(g10Name);</script></div>
+          <div class="col-xs-9 col-md-9 col-lg-9" style="text-align:center; font-size:30px;"><?php echo $ename[12]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="https://github.com/teamNaNaNa/NaNaNa" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?ename=<?php echo $ename[12]; ?>&point=<?php echo $point[12]; ?>&hig=<?php echo $hig[12]; ?>&human=<?php echo $human[12]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
+
           
         </div>
       </div>
