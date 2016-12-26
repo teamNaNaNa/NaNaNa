@@ -81,6 +81,7 @@ try{
     $e3->execute();
     
     $row = 0;
+    $dbCount = 0;
     while($result = $e3->fetch(PDO::FETCH_ASSOC)) {
         $ename[$row] = $result['名称'];
         $point[$row] = $result['住所'];
@@ -88,9 +89,14 @@ try{
         $pointY[$row] = $result['Y(位置)'];
         $hig[$row] = $result['海抜'];
         $human[$row] = $result['収容人数'];
+        $dbCount++;
         $row++;
     }
-    
+
+    if($dbCount == 0){
+        header( "Location: none.php" ) ;
+        exit;
+    } else {
     $_SESSION['ename'] = $ename;
     $_SESSION['point'] = $point;
     $_SESSION['pointX'] = $pointX;
@@ -100,6 +106,7 @@ try{
     
     $_SESSION['gpsx'] = $gpsx; 
     $_SESSION['gpsy'] = $gpsy; 
+    }
 
    // echo $e3->rowCount() . "records found!!";
 
@@ -197,34 +204,13 @@ try{
             var lat = <?php echo json_encode($gpsx); ?>;//緯度 <-逆かな？
             var lng = <?php echo json_encode($gpsy); ?>;//経度
 
-            var g1X = <?php echo json_encode($pointX[0]); ?>;
-            var g1Y = <?php echo json_encode($pointY[0]); ?>;
-            var g1Name = <?php echo json_encode($ename[0]); ?>;
-
-            var g2X = <?php echo json_encode($pointX[1]); ?>;
-            var g2Y = <?php echo json_encode($pointY[1]); ?>;
-            var g2Name = <?php echo json_encode($ename[1]); ?>;
-
-            var g3X = <?php echo json_encode($pointX[2]); ?>;
-            var g3Y = <?php echo json_encode($pointY[2]); ?>;
-            var g3Name = <?php echo json_encode($ename[2]); ?>;
-
             var map = new GMaps({
                 div: "#map",//id名
                 lat: lat,
                 lng: lng,
                 zoom: 13//縮尺
             });
-            
-            map.drawRoute({
-              origin: [lat, lng],//出発点の緯度経度
-              destination: [g1X, g1Y],//目標地点の緯度経度
-              travelMode: 'walking',//モード(walking,driving)
-              strokeColor: '#0000ff',//ルートの色
-              strokeOpacity: 0.8,//ルートの透明度
-              strokeWeight: 4//ルート線の太さ
-            });
-       　　　map.addMarker({
+            map.addMarker({
                 lat: lat,
                 lng: lng,
                 title: "現在地",
@@ -232,46 +218,32 @@ try{
                     content: "<p>現在地</p>"
                 }
             });
+            <?php $mc = 0; 
+              $rcol = array("#0000ff", "#2ecc40", "#dc143c");
+            ?>
+            <?php while ($mc < 3 && isset($ename[$mc])) { ?>
+                var njs = <?php echo json_encode($pointX[$mc]); ?>;
+                var ejs = <?php echo json_encode($pointY[$mc]); ?>;
+                var eename = <?php echo json_encode($ename[$mc]); ?>;
+                var rcolor = <?php echo json_encode($rcol[$mc]); ?>;
+            map.drawRoute({
+              origin: [lat, lng],//出発点の緯度経度
+              destination: [njs, ejs],//目標地点の緯度経度
+              travelMode: 'walking',//モード(walking,driving)
+              strokeColor: rcolor,//ルートの色
+              strokeOpacity: 0.8,//ルートの透明度
+              strokeWeight: 4//ルート線の太さ
+            });
             map.addMarker({
-                lat: g1X,
-                lng: g1Y,
-                title: g1Name,
+                lat: njs,
+                lng: ejs,
+                title: eename,
                 infoWindow: {
-                    content: g1Name
+                    content: eename
                 }
             });
-	    map.drawRoute({
-            origin: [lat, lng],//出発点の緯度経度
-            destination: [g2X, g2Y],//目標地点の緯度経度
-            travelMode: 'walking',//モード(walking,driving)
-            strokeColor: '#2ecc40',//ルートの色
-            strokeOpacity: 0.8,//ルートの透明度
-            strokeWeight: 4//ルート線の太さ
-        });
-	map.addMarker({
-                lat: g2X,
-                lng: g2Y,
-                title: g2Name,
-                infoWindow: {
-                    content: g2Name
-        }
-	});
-	map.drawRoute({
-            origin: [lat, lng],//出発点の緯度経度
-            destination: [g3X, g3Y],//目標地点の緯度経度
-            travelMode: 'walking',//モード(walking,driving)
-            strokeColor: '#dc143c',//ルートの色
-            strokeOpacity: 0.8,//ルートの透明度
-            strokeWeight: 4//ルート線の太さ
-        });
-	map.addMarker({
-                lat: g3X,
-                lng: g3Y,
-                title: g3Name,
-                infoWindow: {
-                    content: g3Name
-        }
-	});
+            <?php $mc ++; ?>
+            <?php } ?>
         };
     </script>
       </div>
@@ -279,25 +251,27 @@ try{
     <!-- 避難所名表示 -->
       <div class="container">
         <div class="row">
-<!-- 避難所情報1 -->
-          <div class="col-xs-9 col-md-9 col-lg-9 center-block bg-info" style="text-align:center; font-size:30px;"><?php echo $ename[0]; ?></div>
+
+        <?php $lc = 0; 
+              $color = array("info", "success", "danger");
+        ?>
+        <?php while ($lc < 3 && isset($ename[$lc])) { ?>
+            
+        <!-- 避難所情報 -->
+          <div class="col-xs-9 col-md-9 col-lg-9 center-block bg-<?php echo $color[$lc]; ?>" style="text-align:center; font-size:30px;"><?php echo $ename[$lc]; ?></div>
           <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[0]; ?>&point=<?php echo $point[0]; ?>&pointX=<?php echo $pointX[0]; ?>&pointY=<?php echo $pointY[0]; ?>&hig=<?php echo $hig[0]; ?>&human=<?php echo $human[0]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
+          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[$lc]; ?>&point=<?php echo $point[$lc]; ?>&pointX=<?php echo $pointX[$lc]; ?>&pointY=<?php echo $pointY[$lc]; ?>&hig=<?php echo $hig[$lc]; ?>&human=<?php echo $human[$lc]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
           </div>
-<!-- 避難所情報2 -->
-          <div class="col-xs-9 col-md-9 col-lg-9 bg-success" style="text-align:center; font-size:30px;"><?php echo $ename[1]; ?></div>
-          <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[1]; ?>&point=<?php echo $point[1]; ?>&pointX=<?php echo $pointX[1]; ?>&pointY=<?php echo $pointY[1]; ?>&hig=<?php echo $hig[1]; ?>&human=<?php echo $human[1]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
-          </div>
-<!-- 避難所情報3 -->
-          <div class="col-xs-9 col-md-9 col-lg-9 bg-danger" style="text-align:center; font-size:30px;"><?php echo $ename[2]; ?></div>
-          <div class="col-xs-3 col-md-3 col-lg-3">
-          <div><a href="shousai.php?gpsx=<?php echo $gpsx; ?>&gpsy=<?php echo $gpsy; ?>&ename=<?php echo $ename[2]; ?>&point=<?php echo $point[2]; ?>&pointX=<?php echo $pointX[2]; ?>&pointY=<?php echo $pointY[2]; ?>&hig=<?php echo $hig[2]; ?>&human=<?php echo $human[2]; ?>" type="button" class="btn btn-link btn-lg" role="button">詳細</a></div>
-          </div>
+        <?php $lc ++; ?>
+        <?php } ?>
         </div>
       </div>
 
+
+<?php if($row > 3)  { ?>
+<?php echo "最大3件表示します。4件目以降の避難所を表示させるには以下のボタンを押してください"; ?>
 <form action="addmore.php" method="get">
 <input type="submit" value="さらに表示する(最大10件)"></button>
+<?php } ?>
   </body>
 </html>

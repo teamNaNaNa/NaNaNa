@@ -50,10 +50,12 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkch2DopMSDqYvFBR6soTAUDDxBwNNW6o"></script>
     <script src="http://raw.githubusercontent.com/HPNeo/gmaps/master/gmaps.js"></script> 
 
-    <input type="button" value="避難所周辺のストリートビューを表示" onclick="sekaicamera()"/>
 
+    <input type="button" value="避難所までの経路を表示" onclick="dmap()"/>
+    <input type="button" value="避難所周辺のストリートビューを表示" onclick="street()"/>
+    
     <script>
-        window.onload = $(function(){
+        function dmap(){
             var lat = <?php echo json_encode($gpsx); ?>;//緯度 <-逆かな？
             var lng = <?php echo json_encode($gpsy); ?>;//経度
 
@@ -94,10 +96,25 @@
                 }
             });
 
-        });
+        };
 
+        function street() {
+            panorama = GMaps.createPanorama({
+                el: '#map',
+                lat : <?php echo json_encode($pointX); ?>,
+                lng : <?php echo json_encode($pointY); ?>,
+                zoom: 2,
+                pov: {
+                heading: 120,
+                pitch: 8
+                }      
+            });   
+        }
 
     </script>
+
+    <script>dmap();</script>
+
 <center>
     <h3>住所 ： <?php echo $point; ?><h3>
     <h3>海抜 ： <?php echo $hig; ?>m<h3>
