@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>避難経路検索</title>
+    <!-- BootstrapのCSS読み込み -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery読み込み -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- BootstrapのJS読み込み -->
+    <script src="js/bootstrap.min.js"></script>
+
+    
+  </head>
+  <body>
+    <header style="background-color:white">
+      <div class="jumbotron">
+	<div class="container">
+	  <center>
+            <h1>避難経路検索</h1>
+	  </center>
+	</div>
+      </div>
+    </header>
+
+//
+    <script>
+		//ユーザーの現在の位置情報を取得
+		navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
+		/***** ユーザーの現在の位置情報を取得 *****/
+		function successCallback(position) {
+ 			 var gl_text = "緯度：" + position.coords.latitude + "<br>";
+ 		   gl_text += "経度：" + position.coords.longitude + "<br>";
+ 		   gl_text += "高度：" + position.coords.altitude + "<br>";
+ 		   gl_text += "緯度・経度の誤差：" + position.coords.accuracy + "<br>";
+ 		   gl_text += "高度の誤差：" + position.coords.altitudeAccuracy + "<br>";
+ 			 document.getElementById("show_result").innerHTML = gl_text;
+		 	gpsx = position.coords.latitude;
+		  gpsy = position.coords.longitude;
+		}
+
+		/***** 位置情報が取得できない場合 *****/
+		function errorCallback(error) {
+			var err_msg = "";
+			switch(error.code)
+			{
+				case 1:
+					err_msg = "位置情報の利用が許可されていません";
+					break;
+				case 2:
+					err_msg = "デバイスの位置が判定できません";
+					break;
+				case 3:
+					err_msg = "タイムアウトしました";
+					break;
+			}
+			document.getElementById("show_result").innerHTML = err_msg;
+			//デバッグ用→　document.getElementById("show_result").innerHTML = error.message;
+		}
+		</script>
+
+		<CENTER><p>あなたの現在位置</p>
+		<div id="show_result"></div></CENTER>
+
+    <div class="container-fluid">
+
+      <div class="row">
+	<div class="col-sm-3" style="background-color:white;"></div>
+	<div class="col-sm-3" style="background-color:white;">
+	  <!-- Split button -->
+	  <div class="btn-group">
+	    <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+	      <span id="visibleValue">避難所検索範囲 ▼</span></button>
+	    <ul class="dropdown-menu" role="menu" hiddenTag="#hiddenValue" visibleTag="#visibleValue">
+	      <li><a href="javascript:void(0)" value="1km ▼">1km</a></li>
+	      <li><a href="javascript:void(0)" value="3km ▼">3km</a></li>
+	      <li><a href="javascript:void(0)" value="5km ▼">5km</a></li>
+	      <li><a href="javascript:void(0)" value="10km ▼">10km</a></li>
+	    </ul>
+	    <input type="hidden" id="hiddenValue" name="elength" value="elen">
+	  </div>
+	  <script type="text/javascript">
+	    $(function(){
+	    $('.dropdown-menu a').click(function(){
+	    //反映先の要素名を取得
+	    var visibleTag = $(this).parents('ul').attr('visibleTag');
+	    var hiddenTag = $(this).parents('ul').attr('hiddenTag');
+	    //選択された内容でボタンの表示を変える
+	    $(visibleTag).html($(this).attr('value'));
+	    //選択された内容でhidden項目の値を変える
+	    $(hiddenTag).val($(this).attr('value'));
+	    })
+	    })
+	  </script>
+	</div>
+	
+
+	<form action="db.php" method="get">
+
+	<div class="col-sm-4" style="background-color:white;">
+	<div class="checkbox">
+	  <label>　<input type="checkbox" name="zisin" value="1"> 地震災害　</label>
+	  <br>
+	  <label>　<input type="checkbox" name="suigai" value="1"> 水害 </label>
+	  <br>
+	  <label>　<input type="checkbox" name="bouhuu" value="1"> 暴風災害 </label>
+	  <br>
+	  <label>　<input type="checkbox" name="tsunami" value="1"> 津波災害　</label>
+	  <br>
+	  <label>　<input type="checkbox" name="etc" value="1"> その他 　</label>
+	</div>
+
+	<div><input id="gpsx" type="hidden" name="gpsx" value=""></div>
+	<div><input id="gpsy" type="hidden" name="gpsy" value=""></div>
+	<script type="text/javascript">
+		document.getElementById("gpsx").value = gpsx;
+		document.getElementById("gpsy").value = gpsy;
+	</script>
+
+
+	<script>document.write(gpsx)</script>
+
+ 	<div>
+	  <input type="submit" class="btn btn-primary" value="検索"></button>
+	</form>
+	</div>
+
+	</div>
+	<div class="col-sm-2" style="background-color:white;"></div>
+      </div>
+    </div>
+    <footer style="background-color:white"></footer>
+  </body>
+</html>
