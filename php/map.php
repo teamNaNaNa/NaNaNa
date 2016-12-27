@@ -188,12 +188,13 @@ try{
     <!-- Map表示 -->
     <style type="text/css">
         #map {
-            width: 600px;
+            width: 1200px;
             height: 600px;
         }
     </style>
   </head>
   <body>
+  	<center>
     <div class="row">
       <div class="col-xs-12 col-md-12 col-lg-12">
     <div id="map"></div>
@@ -248,6 +249,7 @@ try{
     </script>
       </div>
     </div>
+    </center>
     <!-- 避難所名表示 -->
       <div class="container">
         <div class="row">
@@ -267,11 +269,12 @@ try{
         </div>
       </div>
 
-
-<?php if($row > 3)  { ?>
-<?php echo "最大3件表示します。4件目以降の避難所を表示させるには以下のボタンを押してください"; ?>
-<form action="addmore.php" method="get">
-<input type="submit" value="さらに表示する(最大10件)"></button>
-<?php } ?>
-  </body>
+	  <center>
+        <?php if($row > 3)  { ?>
+        <form action="addmore.php" method="get">
+        <input type="submit" value="さらに表示する(最大10件)"></button>
+        <?php } ?>
+        <p><a href="search.php" type="button" class="btn btn-link btn-lg" role="button">検索画面に戻る</a></p>
+      </center>
+        </body>
 </html>

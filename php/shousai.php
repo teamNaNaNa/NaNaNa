@@ -19,7 +19,7 @@
     <!-- Map表示 -->
     <style type="text/css">
         #map {
-            width: 600px;
+            width: 1200px;
             height: 600px;
         }
     </style>
@@ -46,6 +46,7 @@
 	</div>
       </div>
     </header>
+    <center>
     <div id="map"></div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkch2DopMSDqYvFBR6soTAUDDxBwNNW6o"></script>
     <script src="http://raw.githubusercontent.com/HPNeo/gmaps/master/gmaps.js"></script> 
@@ -114,11 +115,13 @@
     </script>
 
     <script>dmap();</script>
-
-<center>
-    <h3>住所 ： <?php echo $point; ?><h3>
-    <h3>海抜 ： <?php echo $hig; ?>m<h3>
-    <h3>収容人数 ： <?php echo $human; ?>人<h3>
-</center>
-    
+    <center>
+        <h3>住所 ： <?php echo $point; ?><h3>
+        <h3>海抜 ： <?php echo $hig; ?>m<h3>
+        <h3>収容人数 ： <?php echo $human; ?>人<h3>
+    </center>
+    <center>
+        <input type="button" value="戻る" onClick="history.back()">
+        <p><a href="search.php" type="button" class="btn btn-link btn-lg" role="button">検索画面に戻る</a></p>
+    </center>
   </body>
