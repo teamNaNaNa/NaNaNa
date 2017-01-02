@@ -1,5 +1,8 @@
 <?php 
 
+// PDO(PHPデータベース操作)のための定義
+
+
 define('DB_DATABASE', 'esoft');
 define('DB_USERNAME', 'NaNaNa');
 define('DB_PASSWORD', 'nananana');
@@ -12,6 +15,7 @@ try{
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // select
+    // 検索条件の確認
     if (isset($_GET['zisin'])) {
         $zisin = 1;
         } else {
@@ -38,6 +42,9 @@ try{
         $tsunami = '_';
         }
 
+
+        // 範囲確認
+
     if (isset($_GET['rad'])) {
         if ($_GET['rad'] == "1km ▼") {
             $rad = 1;   
@@ -59,14 +66,17 @@ try{
     }
     
 
+    // セッション変数から座標を取得
     session_start();
     $gpsx = $_SESSION['gpsx'];
     $gpsy = $_SESSION['gpsy'];
 
-   // $gpslen = $_GET['elen']; 
+
+    // データベースから条件に合致する避難所を検索および抽出
     $e3 = $db->prepare("SELECT 名称, 住所, X(位置), Y(位置), 海抜, 収容人数, ROUND(GLENGTH(GEOMFROMTEXT(CONCAT('LineString(', ?, ' ', ?, ', ', X(位置), ' ', Y(位置), ')'))) * 112.12 * 1000 ) AS '直線距離' FROM earea 
     WHERE 地震災害 LIKE ? AND 暴風災害 LIKE ? AND 水害 LIKE ? AND その他 LIKE ? AND 津波災害 LIKE ? AND ROUND(GLENGTH(GEOMFROMTEXT(CONCAT('LineString(', ?, ' ', ?, ', ', X(位置), ' ', Y(位置), ')'))) * 112.12 * 1000  ) <= ?*1000 ORDER BY 直線距離 LIMIT 13;");
 
+    // 変数指定
     $e3->bindValue(1, $gpsx);
     $e3->bindValue(2, $gpsy);
     $e3->bindValue(3, $zisin);
@@ -78,8 +88,10 @@ try{
     $e3->bindValue(9, $gpsy);
     $e3->bindValue(10, $rad, PDO::PARAM_INT);
  
+    // 実行
     $e3->execute();
     
+    // ループを用いて抽出したデータを1カラムずつ配列として保存
     $row = 0;
     $dbCount = 0;
     while($result = $e3->fetch(PDO::FETCH_ASSOC)) {
@@ -93,10 +105,13 @@ try{
         $row++;
     }
 
+
+    // 抽出データが0の場合、エラーページにリダイレクト
     if($dbCount == 0){
         header( "Location: none.php" ) ;
         exit;
     } else {
+    // データを取得できていた場合、各データをセッション変数として保存、次ページに持ち越し
     $_SESSION['ename'] = $ename;
     $_SESSION['point'] = $point;
     $_SESSION['pointX'] = $pointX;
@@ -107,54 +122,6 @@ try{
     $_SESSION['gpsx'] = $gpsx; 
     $_SESSION['gpsy'] = $gpsy; 
     }
-
-   // echo $e3->rowCount() . "records found!!";
-
-   
-/* 
-    値が受け取れているかのテスト
-
-    if (isset($_GET['zisin'])) {
-           echo $_GET['zisin'];
-    } else {
-       echo 0;
-   }
-   if (isset($_GET['bouhuu'])) {
-       echo $_GET['bouhuu'];
-   } else {
-       echo 0;
-   }
-   if (isset($_GET['suigai'])) {
-       echo $_GET['suigai'];
-   } else {
-       echo 0;
-   }
-   if (isset($_GET['etc'])) {
-       echo $_GET['etc'];
-   } else {
-       echo 0;
-   }
-   if (isset($_GET['tsunami'])) {
-       echo $_GET['tsunami'];
-   } else {
-       echo 0;
-   }
-
-*/
-
-
-
-/*
-    全件抽出テストSQL
-
-    $stmt = $db->query("select 避難所番号, X(位置), Y(位置), 名称, 住所 from earea");
-    $area = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    foreach ($area as $areas) {
-        var_dump($areas);
-    }
-    echo $stmt->rowCount() . "records found!!";
-*/
 
 
     //disconnect
@@ -193,6 +160,9 @@ try{
         }
     </style>
   </head>
+
+
+
   <body>
   	<center>
     <div class="row">
@@ -202,15 +172,18 @@ try{
     <script src="http://raw.githubusercontent.com/HPNeo/gmaps/master/gmaps.js"></script>
     <script>
         window.onload = function(){
-            var lat = <?php echo json_encode($gpsx); ?>;//緯度 <-逆かな？
-            var lng = <?php echo json_encode($gpsy); ?>;//経度
+            var lat = <?php echo json_encode($gpsx); ?>;    // 緯度
+            var lng = <?php echo json_encode($gpsy); ?>;    // 経度
 
+            // MAP定義
             var map = new GMaps({
                 div: "#map",//id名
                 lat: lat,
                 lng: lng,
                 zoom: 13//縮尺
             });
+
+            // MAPの現在地に設定するマーカー
             map.addMarker({
                 lat: lat,
                 lng: lng,
@@ -219,15 +192,19 @@ try{
                     content: "<p>現在地</p>"
                 }
             });
+
+            // 以下ループを用いて、抽出したデータを近い順に最大3件まで取得、各処理を行う
             <?php $mc = 0; 
-              $rcol = array("#0000ff", "#2ecc40", "#dc143c");
+              $rcol = array("#0000ff", "#2ecc40", "#dc143c");   // ルート描画の際の色
             ?>
             <?php while ($mc < 3 && isset($ename[$mc])) { ?>
+                // 各データを取得、一時変数に格納
                 var njs = <?php echo json_encode($pointX[$mc]); ?>;
                 var ejs = <?php echo json_encode($pointY[$mc]); ?>;
                 var eename = <?php echo json_encode($ename[$mc]); ?>;
                 var rcolor = <?php echo json_encode($rcol[$mc]); ?>;
             map.drawRoute({
+              // 現在地から避難所へのルート描画
               origin: [lat, lng],//出発点の緯度経度
               destination: [njs, ejs],//目標地点の緯度経度
               travelMode: 'walking',//モード(walking,driving)
@@ -236,6 +213,7 @@ try{
               strokeWeight: 4//ルート線の太さ
             });
             map.addMarker({
+                // 避難所のマーカー
                 lat: njs,
                 lng: ejs,
                 title: eename,
@@ -254,6 +232,7 @@ try{
       <div class="container">
         <div class="row">
 
+        <!-- MAP描画と同様に最大3件のデータをループを用いてブラウザ上に表示 -->
         <?php $lc = 0; 
               $color = array("info", "success", "danger");
         ?>
@@ -269,6 +248,8 @@ try{
         </div>
       </div>
 
+
+        <!-- 4件以上データがあれば、"さらに表示"ボタンを出現させ、別ページに移動できるようにする -->
 	  <center>
         <?php if($row > 3)  { ?>
         <form action="addmore.php" method="get">

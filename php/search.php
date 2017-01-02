@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <?php 
-    $url = "./search.php"; 
+    $url = "./search.php"; 		// リダイレクト用
     ?>
+
+
 
     <title>避難経路検索</title>
     <!-- BootstrapのCSS読み込み -->
@@ -17,35 +19,55 @@
     <!-- BootstrapのJS読み込み -->
     <script src="../js/bootstrap.min.js"></script>
 
+
+
+
     <script>
-		var locmes;
-		<?php if (isset($_GET['locset'])) { ?>
+		/* 位置情報の読み込み */
+		/* 
+			1回目のアクセス時、JavaScriptを用いて現在地データ(経緯度の座標)を取得
+			取得した座標をURL変数に格納し、リダイレクト
+			リダイレクト後、URL変数の座標を利用して検索に使用
+		*/
+
+		var locmes; // 読み込み状況に応じて、ブラウザ上に表示するメッセージを変更
+
+		<?php if (isset($_GET['locset'])) { ?> // 位置情報が読み込み済みかどうかを判定(リダイレクト後かどうか判定)
 			locmes = "現在地の座標取得に成功しました！以下のフォームから災害の種類と、避難可能な距離を指定してください";
 		<?php  } else { ?>
 			locmes = "現在地の座標を取得しています。これには少し時間がかかります。";
     	navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     	function successCallback(position) {    /* 成功時の処理 */
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
+        var latitude = position.coords.latitude;			// 経度
+        var longitude = position.coords.longitude; 		// 緯度
         if(latitude){   /* 変数latitudeに値が入ってた時 */
             location.href = "<?php echo $url; ?>?locset=1&lati=" + latitude + "&long=" + longitude + "&map=https://maps.google.com/maps?q=" + latitude + "," + longitude;
-        }
+						// 座標データを検索に反映させるため、座標とリダイレクト判定のための変数locsetをURL変数として保存し．同ページにリダイレクト
+			  }
     	}
     	function errorCallback(error) { /* 失敗時の処理 */
         location.href = "<?php echo $url; ?>?alart=on";
     	}
 		<?php } ?>
-    </script>
+
+		</script>
+
+
+
 
 		<script type="text/javascript">
+			// 検索条件が1つ以上指定されているかどうか判定のための関数、チェックがなければ警告ダイアログとreturn false
 				function check() {
 						if ((document.forms.de.j1.checked) ||
 								(document.forms.de.j2.checked) ||
 								(document.forms.de.j3.checked) ||
 								(document.forms.de.j4.checked) ||
 								(document.forms.de.j5.checked)) {
-								window.confirm('検索します。よろしいですか？');
-								return true;
+								if(window.confirm('検索します。よろしいですか？')) {
+									return true;
+								} else {
+									return false;
+								}
 							} else {
 								alert("検索条件を指定してください！");
 								return false;
@@ -53,9 +75,12 @@
 				}
 		</script>
 
+
   </head> 
   
-    <body>
+	
+  
+	<body>
     <header style="background-color:white">
       <div class="jumbotron">
 	<div class="container">
@@ -67,6 +92,7 @@
     </header>
 
     <?php
+				// セッション変数に座標データを保存、次ページに持ち越し
         session_start();
 				if (isset($_GET['lati'])){
 				$_SESSION['gpsx'] = $_GET['lati'];
@@ -74,6 +100,8 @@
 				}
     ?> 
 
+
+		<!-- 座標データの取得状況、および現在の経緯度を表示 -->
 	  <center>
 						<h4><script>document.write(locmes);</script></h4>
 						<?php if (isset($_GET['lati'])) { ?>
@@ -81,6 +109,9 @@
 						<div><a href="search.php" type="button" class="btn btn-link btn-lg" role="button">現在地座標を再取得する</a></div>
 						<?php } ?>
 	  </center>
+
+
+		<!-- 検索フォーム submitでmap.phpにデータを送信 -->
 	<form action="map.php" id="de" method="get">
     <div class="container-fluid">
       <div class="row">

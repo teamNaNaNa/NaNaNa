@@ -27,6 +27,7 @@
   </head>
   <body>
     <?php
+        // 前ページ(map.phpなど)からのデータをセッション変数で取得
         $gpsx = $_GET["gpsx"];
         $gpsy = $_GET["gpsy"]; 
         $ename = $_GET["ename"];
@@ -40,6 +41,8 @@
     <header style="background-color:white">
       <div class="jumbotron">
 	<div class="container">
+
+    <!-- 現在表示している避難所の名前を表示 -->
 	  <center>
             <h1><?php echo $ename; ?></h1>
 	  </center>
@@ -52,10 +55,12 @@
     <script src="http://raw.githubusercontent.com/HPNeo/gmaps/master/gmaps.js"></script> 
 
 
+    <!-- 避難所までの経路、避難所座標のストリートビューを選択できるボタンを表示 -->
     <input type="button" value="避難所までの経路を表示" onclick="dmap()"/>
     <input type="button" value="避難所周辺のストリートビューを表示" onclick="street()"/>
     
     <script>
+        // MAP表示関数
         function dmap(){
             var lat = <?php echo json_encode($gpsx); ?>;//緯度 <-逆かな？
             var lng = <?php echo json_encode($gpsy); ?>;//経度
@@ -71,6 +76,7 @@
                 zoom: 13//縮尺
             });
 
+            // 避難所までの経路を表示
             map.drawRoute({
               origin: [lat, lng],//出発点の緯度経度
               destination: [g1X, g1Y],//目標地点の緯度経度
@@ -80,6 +86,7 @@
               strokeWeight: 4//ルート線の太さ
             });
 
+            // 現在地のマーカー
        　　　map.addMarker({
                 lat: lat,
                 lng: lng,
@@ -88,6 +95,8 @@
                     content: "<p>現在地</p>"
                 }
             });
+
+            // 避難所のマーカー
             map.addMarker({
                 lat: g1X,
                 lng: g1Y,
@@ -99,6 +108,7 @@
 
         };
 
+        // ストリートビュー表示関数
         function street() {
             panorama = GMaps.createPanorama({
                 el: '#map',
@@ -114,12 +124,17 @@
 
     </script>
 
+    <!-- ページを開いた際に初期表示として経路を表示 -->
     <script>dmap();</script>
+
+    <!-- 避難所の詳細データを表示 -->
     <center>
         <h3>住所 ： <?php echo $point; ?><h3>
         <h3>海抜 ： <?php echo $hig; ?>m<h3>
         <h3>収容人数 ： <?php echo $human; ?>人<h3>
     </center>
+
+    <!-- 前ページへ戻るボタンと、検索画面へ戻るボタンを表示 -->
     <center>
         <input type="button" value="戻る" onClick="history.back()">
         <p><a href="search.php" type="button" class="btn btn-link btn-lg" role="button">検索画面に戻る</a></p>

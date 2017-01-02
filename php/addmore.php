@@ -1,4 +1,5 @@
 <?php
+    // 前ページ(map.phpなど)からのデータをセッション変数で取得
     session_start();
     $ename = $_SESSION['ename'];
     $point = $_SESSION['point'];
@@ -46,16 +47,19 @@
     <script src="http://raw.githubusercontent.com/HPNeo/gmaps/master/gmaps.js"></script>    
     <script>
         window.onload = function(){
-            var lat = <?php echo json_encode($gpsx); ?>;//緯度 <-逆かな？
-            var lng = <?php echo json_encode($gpsy); ?>;//経度
+            // 経緯度をPHP変数から取得
+            var lat = <?php echo json_encode($gpsx); ?>; // 緯度 
+            var lng = <?php echo json_encode($gpsy); ?>; // 経度
 
+            
             var map = new GMaps({
-                div: "#map",//id名
+                div: "#map", // id名
                 lat: lat,
                 lng: lng,
-                zoom: 13//縮尺
+                zoom: 13 // 縮尺
             });
 
+            // 現在地のマーカーをMAP上に表示
        　　　map.addMarker({
                 lat: lat,
                 lng: lng,
@@ -64,6 +68,8 @@
                     content: "<p>現在地</p>"
                 }
             });
+
+            // ループを用いてMAP上に最大10件(前ページの3件を除いて、4件目から13件目まで)の避難所のマーカーを表示させる
             <?php $mc = 3; 
             ?>
             <?php while ($mc < 13 && isset($ename[$mc])) { ?>
@@ -71,6 +77,7 @@
                 var ejs = <?php echo json_encode($pointY[$mc]); ?>;
                 var eename = <?php echo json_encode($ename[$mc]); ?>;
 
+            // 避難所のマーカーをMAP上に表示
             map.addMarker({
                 lat: njs,
                 lng: ejs,
@@ -83,12 +90,15 @@
             <?php } ?>
 	};
     </script>
+
       </div>
     </div>
     </center>
+
       <div class="container">       
         <div class="row">
 
+        <!-- ループを用いて最大10件(前ページの3件を除いて、4件目から13件目まで)の避難所情報を表示 -->
         <?php $lc = 3; 
         ?>
         <?php while ($lc < 13 && isset($ename[$lc])) { ?>
@@ -101,6 +111,7 @@
         <?php $lc ++; ?>
         <?php } ?>
           
+        <!-- 前ページへ戻るボタン -->
         <center>
         <input type="button" value="戻る" onClick="history.back()">
         <p><a href="search.php" type="button" class="btn btn-link btn-lg" role="button">検索画面に戻る</a></p>
